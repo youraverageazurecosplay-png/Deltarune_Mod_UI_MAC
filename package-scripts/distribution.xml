@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>DELTARUNE Mod Installer</title>
+    <organization>com.deltarune.mod-installer</organization>
+    <pkg-ref id="com.deltarune.mod-installer"/>
+    <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
+    <options customize="never" require-scripts="true" rootVolumeOnly="true"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.deltarune.mod-installer.choice"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.deltarune.mod-installer.choice" visible="false">
+        <pkg-ref id="com.deltarune.mod-installer"/>
+    </choice>
+    <pkg-ref id="com.deltarune.mod-installer" version="1.0" onConclusion="none">DELTARUNE-Mod-Installer-component.pkg</pkg-ref>
+    <readme file="Installer-ReadMe.txt"/>
+</installer-gui-script>

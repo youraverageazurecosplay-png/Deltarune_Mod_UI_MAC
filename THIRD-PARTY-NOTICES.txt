@@ -1,0 +1,19 @@
+Third-party software included in DELTARUNE Mod Installer
+
+xdelta3 3.2.0
+Copyright (C) Joshua MacDonald and contributors.
+The xdelta3 3.2.x series is licensed under the Apache License, Version 2.0.
+Source: https://github.com/jmacd/xdelta
+License text: https://www.apache.org/licenses/LICENSE-2.0
+
+XZ Utils liblzma
+Copyright (C) The XZ Utils authors.
+liblzma is distributed under the GNU Lesser General Public License, version 2.1
+or later, with additional permissions described by the upstream license.
+Source: https://tukaani.org/xz/
+License text: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+BLAKE3
+Copyright (c) 2020-2023 The BLAKE3 team.
+The BLAKE3 implementation is available under CC0-1.0 or Apache-2.0.
+Source: https://github.com/BLAKE3-team/BLAKE3

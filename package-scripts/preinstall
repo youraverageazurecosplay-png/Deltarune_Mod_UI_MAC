@@ -1,0 +1,69 @@
+#!/bin/bash
+set -eu
+
+APP_PATH="/Applications/DELTARUNE Mod Installer.app"
+CONSOLE_USER="$(/usr/bin/stat -f '%Su' /dev/console)"
+
+if [[ ! -d "$APP_PATH" || "$CONSOLE_USER" == "root" || "$CONSOLE_USER" == "loginwindow" ]]; then
+    exit 0
+fi
+
+CONSOLE_UID="$(/usr/bin/id -u "$CONSOLE_USER")"
+
+run_as_console_user() {
+    /bin/launchctl asuser "$CONSOLE_UID" \
+        /usr/bin/sudo -u "$CONSOLE_USER" "$@"
+}
+
+run_as_console_user /usr/bin/osascript \
+    -e 'tell application id "com.deltarune.mod-installer" to quit' >/dev/null 2>&1 || true
+
+for _ in {1..5}; do
+    installer_pids="$(/usr/bin/pgrep -x DeltaruneModInstaller || true)"
+    running_for_user=0
+    for pid in $installer_pids; do
+        process_uid="$(/bin/ps -p "$pid" -o uid= | /usr/bin/tr -d ' ')"
+        if [[ "$process_uid" == "$CONSOLE_UID" ]]; then
+            running_for_user=1
+        fi
+    done
+    if [[ "$running_for_user" -eq 0 ]]; then
+        break
+    fi
+    /bin/sleep 1
+done
+
+installer_pids="$(/usr/bin/pgrep -x DeltaruneModInstaller || true)"
+for pid in $installer_pids; do
+    process_uid="$(/bin/ps -p "$pid" -o uid= | /usr/bin/tr -d ' ')"
+    if [[ "$process_uid" == "$CONSOLE_UID" ]]; then
+        /bin/kill "$pid" || {
+            if /bin/kill -0 "$pid" 2>/dev/null; then
+                printf 'Could not stop existing DELTARUNE Mod Installer process %s\n' "$pid" >&2
+                exit 1
+            fi
+        }
+    fi
+done
+
+for _ in {1..5}; do
+    installer_pids="$(/usr/bin/pgrep -x DeltaruneModInstaller || true)"
+    running_for_user=0
+    for pid in $installer_pids; do
+        process_uid="$(/bin/ps -p "$pid" -o uid= | /usr/bin/tr -d ' ')"
+        if [[ "$process_uid" == "$CONSOLE_UID" ]]; then
+            running_for_user=1
+        fi
+    done
+    if [[ "$running_for_user" -eq 0 ]]; then
+        break
+    fi
+    /bin/sleep 1
+done
+
+if [[ "$running_for_user" -ne 0 ]]; then
+    printf 'Could not stop the existing DELTARUNE Mod Installer process before updating it.\n' >&2
+    exit 1
+fi
+
+exit 0
